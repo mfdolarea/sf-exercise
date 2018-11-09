@@ -48,4 +48,30 @@
             ];
             return new JsonResponse($searchResponse);
         }
+    
+        /**
+         * @REST\Get("/recipe/category/vegetarian", name="recipe_category_query_API", defaults={"_format": "json"})*
+         */
+        public function categoryRecipeQuery() {
+            $urlAPI = 'http://www.recipepuppy.com/api/?q=vegetarian';
+            $guzClient = new Client;
+            $queryStatus = 200;
+            $queryMessage = 'Results for category: - vegetarian -';
+            $recipes = [];
+            try {
+                $guzRequest = $guzClient->request('GET', $urlAPI);
+                $serviceResponse = json_decode($guzRequest->getBody()->getContents(), true);
+                $recipes = $serviceResponse['results'];
+            } catch(Exception $queryException) {
+                $queryStatus = 500;
+                $queryMessage = 'Request error';
+            }
+            $searchResponse = [
+                'status' => $queryStatus,
+                'message' => $queryMessage,
+                'data' => $recipes
+        
+            ];
+            return new JsonResponse($searchResponse);
+        }
     }
